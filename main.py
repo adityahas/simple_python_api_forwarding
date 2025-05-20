@@ -12,8 +12,8 @@ TARGET_PORT = "8080"
 
 # URL path mapping without API version prefixes
 TARGET_MAP = {
-    "voucher": "http://0.0.0.0:8090",
-    "admin": "http://0.0.0.0:8085",
+    # "voucher": "http://0.0.0.0:8090",
+    # "admin": "http://0.0.0.0:8085",
     # "user": "http://0.0.0.0:8081",
     "loyalties": "http://0.0.0.0:9003",
     # "internal/loyalties": "http://0.0.0.0:9003",
@@ -29,9 +29,6 @@ async def forward_request(request: Request, full_path: str):
     # Remove API version prefix (v1/, v2/, etc.)
     sanitized_path = re.sub(r"^v\d+/", "", full_path)
     base_url = None
-
-    print("full_path = ", full_path)
-    print("sanitized_path = ", sanitized_path)
     
     for src, target in TARGET_MAP.items():
         if sanitized_path.startswith(src):
@@ -40,8 +37,6 @@ async def forward_request(request: Request, full_path: str):
 
     if not base_url:
         base_url = f"{FALLBACK_URL}/{full_path}"
-
-    print("target URL = ", base_url)
     
     async with httpx.AsyncClient() as client:
         try:
